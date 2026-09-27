@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#071c33" />
+  <link rel="icon" href="data:," />
+  <title>Tirumalesh Areti — Data Visualization &amp; Public Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --navy: #07294b;
+      --deep: #041b31;
+      --ink: #0b2339;
+      --paper: #f7fbfd;
+      --surface: #ffffff;
+      --muted: #526b7d;
+      --line: #bfd6e4;
+      --cyan: #12a8c4;
+      --cyan-soft: #d8f4f7;
+      --sky: #67cae1;
+      --lime: #b8dc46;
+      --accent: #08799a;
+      --shadow: 0 18px 50px rgba(3, 35, 58, .12);
+      --display: "IBM Plex Sans", sans-serif;
+      --mono: "IBM Plex Mono", monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #e9f7fc;
+        --paper: #031524;
+        --surface: #08243a;
+        --muted: #a8c6d6;
+        --line: #244e67;
+        --cyan-soft: #0c3d4b;
+        --accent: #63d3e7;
+        --shadow: 0 18px 50px rgba(0, 0, 0, .28);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--display);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    button, a { font: inherit; }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--lime); outline-offset: 4px; }
+
+    .topbar {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 5;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1.6rem;
+      max-width: 1240px;
+      margin: auto;
+      padding: 1.3rem 2rem;
+      color: #dff7fc;
+      font: 500 .78rem/1 var(--mono);
+      letter-spacing: .04em;
+    }
+    .topbar a { text-decoration: none; opacity: .82; transition: opacity .2s ease; }
+    .topbar a:hover { opacity: 1; }
+
+    .hero {
+      position: relative;
+      min-height: 760px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(420px, .95fr);
+      align-items: center;
+      overflow: hidden;
+      background: var(--deep);
+      color: #fff;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(4, 27, 49, .98) 0%, rgba(4, 27, 49, .82) 48%, rgba(4, 27, 49, .18) 100%),
+        radial-gradient(circle at 74% 36%, rgba(18,168,196,.25), transparent 30%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 3;
+      max-width: 770px;
+      padding: 8.5rem clamp(1.4rem, 5vw, 6rem) 5.5rem max(1.4rem, calc((100vw - 1240px) / 2));
+    }
+    .signal-label {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin: 0 0 1.6rem;
+      color: #8ee5f1;
+      font: 500 .76rem/1.3 var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .signal-label::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: var(--lime);
+      box-shadow: 10px 0 var(--lime);
+    }
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(3rem, 6.6vw, 6.8rem);
+      line-height: .94;
+      letter-spacing: -.055em;
+      font-weight: 600;
+    }
+    h1 span { display: block; color: #8ee5f1; }
+    .hero-lede {
+      max-width: 620px;
+      margin: 2rem 0 0;
+      font-size: clamp(1.12rem, 1.7vw, 1.45rem);
+      line-height: 1.52;
+      color: #d4e9f2;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem; margin-top: 2.35rem; }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .9rem 1.15rem;
+      background: var(--lime);
+      color: #102b32;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 4px;
+      transition: background .2s ease;
+    }
+    .hero-cta:hover { background: #d1ee6c; }
+    .hero-note { color: #8fb5c8; font: .74rem/1.5 var(--mono); }
+    .hero-viz {
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 58%;
+      z-index: 0;
+      min-height: 760px;
+    }
+    #field { display: block; width: 100%; height: 100%; }
+    .viz-key {
+      position: absolute;
+      z-index: 3;
+      right: max(1.4rem, calc((100vw - 1240px) / 2));
+      bottom: 2rem;
+      display: flex;
+      gap: 1.3rem;
+      color: #a9c7d5;
+      font: .7rem/1.4 var(--mono);
+    }
+    .viz-key span { display: inline-flex; align-items: center; gap: .45rem; }
+    .viz-key i { width: 7px; height: 7px; border-radius: 50%; background: var(--sky); }
+    .viz-key span:last-child i { background: var(--lime); }
+
+    .metrics-strip {
+      position: relative;
+      z-index: 4;
+      margin-top: -1px;
+      background: #0a3858;
+      color: #fff;
+    }
+    .metrics-inner {
+      max-width: 1240px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,.14);
+    }
+    .metric { min-height: 120px; padding: 1.55rem 2rem; background: #0a3858; }
+    .metric strong { display: block; margin-bottom: .3rem; color: #9de7ef; font-size: 1.05rem; font-weight: 600; }
+    .metric span { color: #cee3ec; font-size: .92rem; }
+
+    .section { max-width: 1240px; margin: auto; padding: 7.5rem 2rem; }
+    .section-head { display: grid; grid-template-columns: minmax(220px,.42fr) 1fr; gap: 3rem; align-items: end; margin-bottom: 3.2rem; }
+    .eyebrow { margin: 0; color: var(--accent); font: 500 .76rem/1.4 var(--mono); letter-spacing: .11em; text-transform: uppercase; }
+    h2 { margin: 0; max-width: 850px; font-size: clamp(2.3rem, 4.4vw, 4.5rem); line-height: 1.05; letter-spacing: -.045em; font-weight: 600; }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+      min-height: 530px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+    .project-copy { padding: clamp(2rem, 4vw, 4rem); display: flex; flex-direction: column; justify-content: space-between; }
+    .project-index { color: var(--accent); font: 500 .75rem/1 var(--mono); }
+    .project h3 { margin: 1.1rem 0 1rem; font-size: clamp(2rem, 3.8vw, 4rem); line-height: 1; letter-spacing: -.04em; }
+    .project p { color: var(--muted); font-size: 1.03rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 2rem; }
+    .tag { padding: .43rem .65rem; border: 1px solid var(--line); color: var(--ink); font: 500 .68rem/1 var(--mono); }
+
+    .project-stage {
+      position: relative;
+      overflow: hidden;
+      min-height: 500px;
+      padding: 2rem;
+      background: #06243d;
+      color: #fff;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    .project-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .45;
+      background-image: linear-gradient(rgba(94,190,214,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(94,190,214,.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .stage-top, .stage-bottom { position: relative; z-index: 2; display: flex; justify-content: space-between; color: #9ec6d5; font: .68rem/1.5 var(--mono); }
+    .stage-title { color: #eefbff; }
+    .stage-visual { position: relative; z-index: 2; display: grid; place-items: center; min-height: 320px; }
+    .orbit { position: relative; width: min(370px, 76vw); aspect-ratio: 1; }
+    .orbit-ring { position: absolute; inset: 12%; border: 1px solid rgba(103,202,225,.35); border-radius: 50%; animation: spin 24s linear infinite; }
+    .orbit-ring:nth-child(2) { inset: 26%; border-style: dashed; animation-direction: reverse; animation-duration: 18s; }
+    .orbit-core { position: absolute; inset: 40%; border-radius: 50%; background: #b8dc46; box-shadow: 0 0 35px rgba(184,220,70,.48); animation: breathe 3s ease-in-out infinite; }
+    .dot { position: absolute; width: 12px; height: 12px; border: 2px solid #67cae1; border-radius: 50%; background: #06243d; box-shadow: 0 0 14px rgba(103,202,225,.7); }
+    .d1 { left: 11%; top: 48%; } .d2 { right: 17%; top: 18%; } .d3 { right: 6%; bottom: 28%; } .d4 { left: 30%; top: 8%; }
+    .scanline { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 0%, rgba(103,202,225,.14) 50%, transparent 53%); animation: scan 5s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { transform: scale(1.18); box-shadow: 0 0 55px rgba(184,220,70,.66); } }
+    @keyframes scan { from { transform: translateY(-55%); } to { transform: translateY(55%); } }
+
+    .practice { border-top: 1px solid var(--line); }
+    .practice-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: 5rem; align-items: start; }
+    .practice-intro h2 { margin-top: 1.2rem; }
+    .practice-intro p { margin: 1.5rem 0 0; color: var(--muted); font-size: 1.05rem; }
+    #react-practice { min-height: 430px; }
+    .practice-panel { border-top: 3px solid var(--ink); }
+    .tablist { display: flex; gap: 0; border-bottom: 1px solid var(--line); }
+    .tab {
+      flex: 1;
+      border: 0;
+      border-right: 1px solid var(--line);
+      padding: 1rem .8rem;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font: 500 .74rem/1.2 var(--mono);
+      text-align: left;
+    }
+    .tab:last-child { border-right: 0; }
+    .tab[aria-selected="true"] { color: var(--ink); background: var(--cyan-soft); }
+    .panel-body { padding: 2.3rem 0; animation: panelIn .35s ease both; }
+    @keyframes panelIn { from { opacity: .3; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+    .panel-kicker { color: var(--accent); font: .72rem/1 var(--mono); }
+    .panel-body h3 { margin: .9rem 0 1rem; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.1; letter-spacing: -.035em; }
+    .panel-body p { margin: 0; max-width: 680px; color: var(--muted); font-size: 1.03rem; }
+    .mini-flow { margin-top: 2.4rem; display: grid; grid-template-columns: repeat(3,1fr); gap: .8rem; }
+    .flow-step { position: relative; padding-top: 1rem; border-top: 1px solid var(--line); }
+    .flow-step b { display: block; color: var(--accent); font: 500 .68rem/1 var(--mono); }
+    .flow-step span { display: block; margin-top: .45rem; font-size: .88rem; }
+
+    .capabilities { background: var(--cyan-soft); }
+    .capabilities .section { padding-top: 6.5rem; padding-bottom: 6.5rem; }
+    .cap-list { display: grid; grid-template-columns: repeat(3,1fr); border-top: 1px solid var(--line); }
+    .cap { padding: 2rem 2rem 2rem 0; border-bottom: 1px solid var(--line); }
+    .cap + .cap { padding-left: 2rem; border-left: 1px solid var(--line); }
+    .cap-num { color: var(--accent); font: 500 .68rem/1 var(--mono); }
+    .cap h3 { margin: .9rem 0 .55rem; font-size: 1.35rem; }
+    .cap p { margin: 0; color: var(--muted); }
+
+    .history { border-top: 1px solid var(--line); }
+    .career-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.28fr) minmax(280px, .72fr);
+      gap: clamp(3rem, 7vw, 7rem);
+      align-items: start;
+    }
+    .timeline { position: relative; }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: .45rem;
+      bottom: .45rem;
+      left: 7px;
+      width: 1px;
+      background: var(--line);
+    }
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 11rem 1fr;
+      gap: 2rem;
+      padding: 0 0 3.4rem 2.3rem;
+    }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      top: .38rem;
+      left: 2px;
+      width: 11px;
+      height: 11px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: 0 0 0 5px var(--paper);
+    }
+    .timeline-item:first-child::before { background: var(--lime); border-color: var(--ink); }
+    .timeline-period { color: var(--accent); font: 500 .72rem/1.5 var(--mono); }
+    .timeline-copy h3 { margin: 0 0 .25rem; font-size: clamp(1.35rem, 2.4vw, 2rem); line-height: 1.15; letter-spacing: -.025em; }
+    .timeline-org { display: block; margin-bottom: .8rem; color: var(--ink); font: 500 .76rem/1.4 var(--mono); }
+    .timeline-copy p { margin: 0; color: var(--muted); font-size: 1rem; }
+    .education { border-top: 3px solid var(--ink); }
+    .education h3, .skills h3 { margin: 1.15rem 0 1.4rem; font-size: 1.45rem; }
+    .degree { padding: 1.25rem 0; border-top: 1px solid var(--line); }
+    .degree:first-of-type { border-top: 0; padding-top: 0; }
+    .degree strong { display: block; font-size: 1rem; line-height: 1.4; }
+    .degree span { display: block; margin-top: .35rem; color: var(--muted); font-size: .9rem; }
+    .degree time { display: block; margin-top: .55rem; color: var(--accent); font: 500 .68rem/1 var(--mono); }
+    .skills { margin-top: 4.8rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+    .skill-list { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .skill {
+      padding: .62rem .8rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font: 500 .72rem/1 var(--mono);
+    }
+
+    .closing { background: var(--deep); color: #fff; }
+    .closing .section { padding-top: 6.5rem; padding-bottom: 6.5rem; }
+    .closing-grid { display: grid; grid-template-columns: .44fr 1fr; gap: 3rem; }
+    .closing .eyebrow { color: #8ee5f1; }
+    .closing h2 { max-width: 900px; }
+    .closing p { max-width: 680px; color: #bad3df; font-size: 1.05rem; }
+    .contact-line { display: flex; align-items: center; gap: 1rem; margin-top: 2.2rem; font: 500 .78rem/1 var(--mono); color: #8ee5f1; }
+    .contact-line::before { content: ""; width: 60px; height: 2px; background: var(--lime); }
+    .contact-links { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.7rem; }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .85rem 1rem;
+      border: 1px solid rgba(142,229,241,.44);
+      color: #effcff;
+      text-decoration: none;
+      font: 500 .76rem/1 var(--mono);
+      transition: border-color .2s ease, background .2s ease;
+    }
+    .contact-link:hover { border-color: var(--lime); background: rgba(184,220,70,.08); }
+    .contact-link span { color: var(--lime); }
+
+    /* Motion system: purposeful depth, live data relationships, and restrained CDC signal color. */
+    .hero-copy > * { opacity: 0; transform: translateY(22px); animation: heroReveal .9s cubic-bezier(.2,.75,.2,1) forwards; }
+    .hero-copy .signal-label { animation-delay: .08s; }
+    .hero-copy h1 { animation-delay: .16s; }
+    .hero-copy .hero-lede { animation-delay: .28s; }
+    .hero-copy .hero-actions { animation-delay: .4s; }
+    @keyframes heroReveal { to { opacity: 1; transform: none; } }
+    .hero-viz::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(rgba(103,202,225,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(103,202,225,.035) 1px, transparent 1px);
+      background-size: 44px 44px;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 28%);
+      mask-image: linear-gradient(90deg, transparent, #000 28%);
+    }
+    .scroll-index {
+      position: fixed;
+      z-index: 9;
+      right: 0;
+      top: 0;
+      width: 3px;
+      height: 100vh;
+      background: rgba(103,202,225,.12);
+      pointer-events: none;
+    }
+    .scroll-index span { display: block; width: 100%; height: 0; background: var(--lime); box-shadow: 0 0 10px rgba(184,220,70,.45); }
+    .reveal-block { opacity: 1; transform: none; }
+    .reveal-block.is-visible { animation: sectionSettle .8s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes sectionSettle { from { transform: translateY(18px); } to { transform: none; } }
+    .project { transform-style: preserve-3d; transition: transform .18s ease-out, box-shadow .25s ease; }
+    .project.is-tilting { box-shadow: 0 28px 70px rgba(3,35,58,.17); }
+    .project-stage { isolation: isolate; cursor: crosshair; }
+    .project-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--stage-x, 50%) var(--stage-y, 50%), rgba(103,202,225,.15), transparent 28%);
+    }
+    .signal-lab { position: relative; z-index: 2; min-height: 350px; display: grid; grid-template-rows: auto 1fr auto; }
+    .lab-toolbar { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; justify-content: center; }
+    .lab-mode {
+      border: 1px solid rgba(103,202,225,.32);
+      padding: .48rem .7rem;
+      background: rgba(4,27,49,.58);
+      color: #9ec6d5;
+      cursor: pointer;
+      font: 500 .62rem/1 var(--mono);
+      letter-spacing: .04em;
+      transition: color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .lab-mode[aria-pressed="true"] { color: #08243a; border-color: var(--lime); background: var(--lime); }
+    .lab-mode:hover { border-color: #8ee5f1; color: #fff; }
+    .lab-canvas { width: 100%; min-height: 255px; overflow: visible; }
+    .lab-link { stroke: #67cae1; stroke-opacity: .24; vector-effect: non-scaling-stroke; }
+    .lab-link.is-flowing { stroke-dasharray: 4 9; animation: linkFlow 1.8s linear infinite; }
+    .lab-node { cursor: pointer; transition: filter .2s ease; }
+    .lab-node:hover { filter: url(#node-glow); }
+    .lab-halo { fill: none; stroke: #b8dc46; stroke-opacity: .24; vector-effect: non-scaling-stroke; animation: haloPulse 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    .lab-readout { display: flex; justify-content: space-between; gap: 1rem; min-height: 1.3rem; color: #8fb5c8; font: .62rem/1.4 var(--mono); }
+    .lab-readout strong { color: #eefbff; font-weight: 500; }
+    @keyframes linkFlow { to { stroke-dashoffset: -26; } }
+    @keyframes haloPulse { 50% { opacity: .25; transform: scale(1.7); } }
+    .flow-step { overflow: hidden; }
+    .flow-step::after { content: ""; position: absolute; left: 0; top: -1px; width: 0; height: 2px; background: var(--accent); transition: width .65s cubic-bezier(.2,.8,.2,1); }
+    .panel-body .flow-step:nth-child(1)::after { width: 100%; transition-delay: .08s; }
+    .panel-body .flow-step:nth-child(2)::after { width: 100%; transition-delay: .18s; }
+    .panel-body .flow-step:nth-child(3)::after { width: 100%; transition-delay: .28s; }
+    @media (max-width: 900px) {
+      .hero { min-height: auto; display: block; padding-bottom: 0; }
+      .hero-copy { padding-top: 8rem; padding-bottom: 2.5rem; }
+      .hero-viz { position: relative; width: 100%; min-height: 380px; height: 380px; margin-top: -5rem; opacity: .82; }
+      .hero::before { background: linear-gradient(180deg, rgba(4,27,49,1) 0%, rgba(4,27,49,.95) 52%, rgba(4,27,49,.2) 100%); }
+      .viz-key { right: 1.4rem; bottom: 1rem; }
+      .metrics-inner { grid-template-columns: 1fr; }
+      .metric { min-height: 0; }
+      .section-head, .project, .practice-grid, .career-layout, .closing-grid { grid-template-columns: 1fr; }
+      .career-layout { gap: 4.5rem; }
+      .project-stage { min-height: 430px; }
+      .section { padding: 5.5rem 1.4rem; }
+      .cap-list { grid-template-columns: 1fr; }
+      .cap, .cap + .cap { padding: 1.5rem 0; border-left: 0; }
+    }
+    @media (max-width: 560px) {
+      .topbar { justify-content: space-between; gap: .7rem; padding: 1.25rem 1.3rem; }
+      .hero-copy { padding-left: 1.3rem; padding-right: 1.3rem; }
+      h1 { font-size: clamp(2.9rem, 15vw, 4.4rem); }
+      .hero-lede { font-size: 1.02rem; }
+      .hero-viz { height: 330px; min-height: 330px; margin-top: -3.2rem; }
+      .viz-key { left: 1.3rem; right: auto; flex-wrap: wrap; }
+      .metric { padding: 1.3rem; }
+      .section-head { gap: 1.2rem; }
+      .project-copy { padding: 1.7rem; }
+      .project-stage { min-height: 370px; padding: 1.3rem; }
+      .stage-visual { min-height: 270px; }
+      .mini-flow { grid-template-columns: 1fr; }
+      .flow-step { padding: .8rem 0; }
+      .tab { padding: .85rem .45rem; font-size: .66rem; }
+      .timeline-item { grid-template-columns: 1fr; gap: .45rem; padding-left: 2rem; }
+      .skills { margin-top: 3.5rem; }
+      .skill { font-size: .66rem; }
+      .contact-links { align-items: stretch; flex-direction: column; }
+      .contact-link { justify-content: space-between; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .reveal-block, .hero-copy > * { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-index" aria-hidden="true"><span></span></div>
+  <nav class="topbar" aria-label="Portfolio sections">
+    <a href="#work">Work</a>
+    <a href="#practice">Practice</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="signal-label">Public health × data visualization</p>
+        <h1 id="hero-title">Tirumalesh <span>Areti</span></h1>
+        <p class="hero-lede">Lead developer building CDC’s SUDORS overdose-surveillance platform with React, D3.js and TypeScript.</p>
+        <div class="hero-actions">
+          <a class="hero-cta" href="#work">Explore selected work <span aria-hidden="true">↓</span></a>
+          <span class="hero-note">Move across the field · click to pulse</span>
+        </div>
+      </div>
+      <div class="hero-viz" aria-hidden="true"><canvas id="field"></canvas></div>
+      <div class="viz-key" aria-hidden="true"><span><i></i> signal</span><span><i></i> focus</span></div>
+    </section>
+
+    <section class="metrics-strip" aria-label="Professional focus">
+      <div class="metrics-inner">
+        <div class="metric"><strong>Lead Developer</strong><span>End-to-end product and interface development</span></div>
+        <div class="metric"><strong>React + TypeScript</strong><span>Durable, component-led front ends</span></div>
+        <div class="metric"><strong>D3.js</strong><span>Data translated into visual systems</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="work">
+      <div class="section-head">
+        <p class="eyebrow">Selected work / 01</p>
+        <h2>One flagship system. Public-health impact at national scale.</h2>
+      </div>
+      <article class="project">
+        <div class="project-copy">
+          <div>
+            <span class="project-index">SUDORS · CDC</span>
+            <h3>Overdose surveillance, made legible.</h3>
+            <p>Leading application development for the State Unintentional Drug Overdose Reporting System—shaping the experience from architecture through interactive visualization.</p>
+          </div>
+          <div class="tags" aria-label="Technologies"><span class="tag">REACT</span><span class="tag">D3.JS</span><span class="tag">TYPESCRIPT</span><span class="tag">DATA VISUALIZATION</span></div>
+        </div>
+        <div class="project-stage" aria-label="Abstract animated visualization representing connected surveillance signals">
+          <div class="stage-top"><span class="stage-title">SYSTEM VIEW</span><span>INTERACTIVE VISUAL STUDY</span></div>
+          <div class="stage-visual">
+            <div id="signal-lab" class="signal-lab" aria-label="Interactive surveillance signal network">
+              <div class="stage-visual">
+                <div class="orbit" aria-hidden="true"><div class="orbit-ring"><span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span><span class="dot d4"></span></div><div class="orbit-ring"></div><div class="orbit-core"></div><div class="scanline"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="stage-bottom"><span>RAW SIGNAL</span><span>STRUCTURE</span><span>DECISION SUPPORT</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section practice" id="practice">
+      <div class="practice-grid">
+        <div class="practice-intro">
+          <p class="eyebrow">How I work</p>
+          <h2>Clarity is an engineering decision.</h2>
+          <p>The strongest interfaces align data structure, visual hierarchy and interaction behavior—so understanding arrives quickly and holds up under complexity.</p>
+        </div>
+        <div id="react-practice">
+          <div class="practice-panel">
+            <div class="tablist" role="tablist" aria-label="Working approach">
+              <button class="tab" aria-selected="true">01 · MODEL</button><button class="tab">02 · MAKE</button><button class="tab">03 · REFINE</button>
+            </div>
+            <div class="panel-body"><span class="panel-kicker">01 / MODEL</span><h3>Find the structure before styling the surface.</h3><p>Map the domain, the decisions and the edge cases. The interface starts with what people need to understand—not with a component library.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section history" id="experience">
+      <div class="section-head">
+        <p class="eyebrow">Experience &amp; education</p>
+        <h2>Building SUDORS from the interface outward.</h2>
+      </div>
+      <div class="career-layout">
+        <div class="timeline" aria-label="Work history">
+          <article class="timeline-item">
+            <time class="timeline-period" datetime="2025-10">Oct 2025 — Present</time>
+            <div class="timeline-copy">
+              <h3>Software Developer · Lead Developer, SUDORS</h3>
+              <span class="timeline-org">CDC · STATE UNINTENTIONAL DRUG OVERDOSE REPORTING SYSTEM</span>
+              <p>Leading development of the CDC’s national overdose-surveillance platform across 49 jurisdictions.</p>
+            </div>
+          </article>
+          <article class="timeline-item">
+            <time class="timeline-period" datetime="2023-09">Sep 2023 — Sep 2025</time>
+            <div class="timeline-copy">
+              <h3>Jr. Web Developer</h3>
+              <span class="timeline-org">CDC · SUDORS TEAM</span>
+              <p>Developed web experiences for the State Unintentional Drug Overdose Reporting System.</p>
+            </div>
+          </article>
+        </div>
+        <aside class="education" aria-labelledby="education-title">
+          <p class="eyebrow">Education</p>
+          <h3 id="education-title">Computer science foundation</h3>
+          <div class="degree">
+            <strong>MS in Computer Science</strong>
+            <span>Wichita State University</span>
+            <time datetime="2022">2022–2023</time>
+          </div>
+          <div class="degree">
+            <strong>BS in Computer Science</strong>
+            <span>Sathyabama Institute of Science and Technology</span>
+            <time datetime="2017">2017–2021</time>
+          </div>
+        </aside>
+      </div>
+      <div class="skills" aria-labelledby="skills-title">
+        <p class="eyebrow">Technical range</p>
+        <h3 id="skills-title">Skills</h3>
+        <div class="skill-list">
+          <span class="skill">DATA VISUALIZATION</span><span class="skill">REACT.JS</span><span class="skill">D3.JS</span><span class="skill">TYPESCRIPT</span><span class="skill">JAVASCRIPT</span><span class="skill">REST APIS</span><span class="skill">.NET CORE</span><span class="skill">AWS</span><span class="skill">NODE.JS</span><span class="skill">FRONT-END DEVELOPMENT</span><span class="skill">GIT</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="capabilities" id="focus">
+      <div class="section">
+        <div class="section-head">
+          <p class="eyebrow">Focus areas</p>
+          <h2>Built where product thinking meets visual explanation.</h2>
+        </div>
+        <div class="cap-list">
+          <article class="cap"><span class="cap-num">01</span><h3>Application architecture</h3><p>Component systems and front-end foundations designed for clarity, performance and sustained evolution.</p></article>
+          <article class="cap"><span class="cap-num">02</span><h3>Interactive visualization</h3><p>Purposeful D3.js experiences that reveal relationships without decorating the data.</p></article>
+          <article class="cap"><span class="cap-num">03</span><h3>Public-health UX</h3><p>Complex workflows shaped into legible, dependable tools for consequential work.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing" id="contact">
+      <div class="section closing-grid">
+        <p class="eyebrow">Connect</p>
+        <div>
+          <h2>Turning complex public-health data into interfaces people can act on.</h2>
+          <p>My practice combines front-end engineering, visual systems and a deep focus on the people making sense of the information.</p>
+          <div class="contact-line">Tirumalesh Areti · Lead Developer</div>
+          <div class="contact-links" aria-label="Contact links">
+            <a class="contact-link" href="https://www.linkedin.com/in/tirumalesh12345/" target="_blank" rel="noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script>
+    (function () {
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var canvas = document.getElementById('field');
+      var wrap = canvas.parentElement;
+      var ctx = canvas.getContext('2d');
+      var nodes = [];
+      var pointer = { x: -9999, y: -9999, px: -9999, py: -9999, active: false };
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var width = 0, height = 0, raf = 0, pulse = 0, tick = 0;
+
+      function seeded(i, salt) {
+        var x = Math.sin(i * 91.73 + salt * 17.11) * 43758.5453;
+        return x - Math.floor(x);
+      }
+      function makeGraph() {
+        var count = width < 560 ? 54 : 96;
+        nodes = [];
+        for (var i = 0; i < count; i++) {
+          nodes.push({
+            id: i,
+            x: seeded(i, 1) * width,
+            y: seeded(i, 2) * height,
+            vx: (seeded(i, 3) - .5) * .24,
+            vy: (seeded(i, 4) - .5) * .24,
+            r: i % 19 === 0 ? 4.2 : (i % 8 === 0 ? 2.5 : 1.25),
+            focus: i % 19 === 0,
+            phase: seeded(i, 5) * Math.PI * 2
+          });
+        }
+      }
+      function resize() {
+        var rect = wrap.getBoundingClientRect();
+        width = Math.max(1, rect.width); height = Math.max(1, rect.height);
+        canvas.width = width * dpr; canvas.height = height * dpr;
+        canvas.style.width = width + 'px'; canvas.style.height = height + 'px';
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        makeGraph();
+      }
+      function draw() {
+        tick += .008;
+        ctx.clearRect(0,0,width,height);
+        var grd = ctx.createRadialGradient(width*.62,height*.45,10,width*.62,height*.45,Math.max(width,height)*.7);
+        grd.addColorStop(0,'rgba(18,168,196,.23)'); grd.addColorStop(1,'rgba(4,27,49,0)');
+        ctx.fillStyle = grd; ctx.fillRect(0,0,width,height);
+
+        if (window.d3 && nodes.length > 2) {
+          var delaunay = d3.Delaunay.from(nodes, function(n){ return n.x; }, function(n){ return n.y; });
+          var triangles = delaunay.triangles;
+          for (var ti = 0; ti < triangles.length; ti += 3) {
+            var a = nodes[triangles[ti]], b = nodes[triangles[ti+1]], c = nodes[triangles[ti+2]];
+            var longest = Math.max(Math.hypot(a.x-b.x,a.y-b.y), Math.hypot(b.x-c.x,b.y-c.y), Math.hypot(c.x-a.x,c.y-a.y));
+            if (longest < 180) {
+              var cx = (a.x+b.x+c.x)/3, cy = (a.y+b.y+c.y)/3;
+              var near = pointer.active ? Math.max(0, 1-Math.hypot(pointer.x-cx,pointer.y-cy)/230) : 0;
+              ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(c.x,c.y); ctx.closePath();
+              ctx.fillStyle = 'rgba(103,202,225,' + (.008 + near*.035) + ')'; ctx.fill();
+              ctx.strokeStyle = 'rgba(103,202,225,' + (.055 + near*.2) + ')'; ctx.lineWidth = .65; ctx.stroke();
+            }
+          }
+        }
+        if (pulse > 0) {
+          ctx.beginPath(); ctx.arc(pointer.x,pointer.y,(1-pulse)*190,0,Math.PI*2);
+          ctx.strokeStyle='rgba(184,220,70,'+(pulse*.5)+')'; ctx.lineWidth=1.5; ctx.stroke(); pulse -= .022;
+        }
+        nodes.forEach(function(n){
+          if (!reduced) {
+            if (pointer.active) {
+              var dx=pointer.x-n.x, dy=pointer.y-n.y, d=Math.max(34,Math.hypot(dx,dy));
+              if(d<240){ var pull=(1-d/240)*.018; n.vx+=dx/d*pull; n.vy+=dy/d*pull; }
+            }
+            n.vx += Math.cos(tick+n.phase)*.0018; n.vy += Math.sin(tick*.8+n.phase)*.0018;
+            n.x+=n.vx; n.y+=n.vy; n.vx*=.988; n.vy*=.988;
+            if(n.x<-12)n.x=width+12;if(n.x>width+12)n.x=-12;if(n.y<-12)n.y=height+12;if(n.y>height+12)n.y=-12;
+          }
+          var proximity = pointer.active ? Math.max(0, 1-Math.hypot(pointer.x-n.x,pointer.y-n.y)/170) : 0;
+          if (proximity > 0) {
+            ctx.beginPath(); ctx.arc(n.x,n.y,n.r+proximity*10,0,Math.PI*2);
+            ctx.fillStyle='rgba(103,202,225,'+(proximity*.09)+')'; ctx.fill();
+          }
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r+proximity*1.8,0,Math.PI*2);
+          ctx.fillStyle=n.focus?'#b8dc46':'#67cae1';ctx.fill();
+          if(n.focus){ctx.beginPath();ctx.arc(n.x,n.y,n.r+7+Math.sin(tick*4+n.phase)*2,0,Math.PI*2);ctx.strokeStyle='rgba(184,220,70,.28)';ctx.stroke();}
+        });
+        if (pointer.active && pointer.px > -100) {
+          ctx.beginPath(); ctx.moveTo(pointer.px,pointer.py); ctx.lineTo(pointer.x,pointer.y);
+          ctx.strokeStyle='rgba(184,220,70,.2)'; ctx.lineWidth=1; ctx.stroke();
+        }
+        if (!reduced) raf=requestAnimationFrame(draw);
+      }
+      wrap.addEventListener('pointermove',function(e){ var r=wrap.getBoundingClientRect();pointer.px=pointer.x;pointer.py=pointer.y;pointer.x=e.clientX-r.left;pointer.y=e.clientY-r.top;pointer.active=true; });
+      wrap.addEventListener('pointerleave',function(){pointer.active=false;pointer.px=-9999;});
+      wrap.addEventListener('pointerdown',function(e){var r=wrap.getBoundingClientRect();pointer.x=e.clientX-r.left;pointer.y=e.clientY-r.top;pulse=1;});
+      new ResizeObserver(function(){cancelAnimationFrame(raf);resize();draw();}).observe(wrap);
+
+      var progress = document.querySelector('.scroll-index span');
+      function updateScroll(){
+        var max = document.documentElement.scrollHeight - innerHeight;
+        progress.style.height = (max > 0 ? Math.min(100, scrollY/max*100) : 0) + '%';
+      }
+      addEventListener('scroll', updateScroll, {passive:true}); updateScroll();
+
+      var revealTargets = document.querySelectorAll('.section-head, .project, .practice-grid, .career-layout, .skills, .cap-list, .closing-grid');
+      revealTargets.forEach(function(el){ el.classList.add('reveal-block'); });
+      if ('IntersectionObserver' in window && !reduced) {
+        var observer = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){ if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);} });
+        },{threshold:.14,rootMargin:'0px 0px -8%'});
+        revealTargets.forEach(function(el){observer.observe(el);});
+      } else { revealTargets.forEach(function(el){el.classList.add('is-visible');}); }
+
+      var project = document.querySelector('.project');
+      var stage = document.querySelector('.project-stage');
+      if (project && stage && !reduced) {
+        project.addEventListener('pointermove',function(e){
+          if (innerWidth < 900) return;
+          var r=project.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+          project.style.transform='perspective(1200px) rotateX('+(-y*2.2)+'deg) rotateY('+(x*2.8)+'deg)'; project.classList.add('is-tilting');
+        });
+        project.addEventListener('pointerleave',function(){project.style.transform='';project.classList.remove('is-tilting');});
+        stage.addEventListener('pointermove',function(e){var r=stage.getBoundingClientRect();stage.style.setProperty('--stage-x',((e.clientX-r.left)/r.width*100)+'%');stage.style.setProperty('--stage-y',((e.clientY-r.top)/r.height*100)+'%');});
+      }
+
+      if (window.React && window.ReactDOM && window.d3) {
+        var h = React.createElement;
+
+        function SignalLab(){
+          var svgRef=React.useRef(null), state=React.useState('network'), mode=state[0], setMode=state[1];
+          var hoverState=React.useState('Hover a signal to inspect the system'), readout=hoverState[0], setReadout=hoverState[1];
+          React.useEffect(function(){
+            var W=560,H=270, palette=['#67cae1','#8ee5f1','#b8dc46'];
+            var rng=d3.randomLcg(.418), data=d3.range(34).map(function(i){return {id:i,group:i%3,weight:i%11===0?2:1,x:W/2+(rng()-.5)*220,y:H/2+(rng()-.5)*160};});
+            var links=d3.range(48).map(function(i){return {source:i%34,target:(i*7+5)%34};}).filter(function(d){return d.source!==d.target;});
+            var svg=d3.select(svgRef.current).attr('viewBox','0 0 '+W+' '+H);
+            svg.selectAll('*').remove();
+            var defs=svg.append('defs');
+            var filter=defs.append('filter').attr('id','node-glow').attr('x','-200%').attr('y','-200%').attr('width','400%').attr('height','400%');
+            filter.append('feGaussianBlur').attr('stdDeviation','5').attr('result','blur');
+            var merge=filter.append('feMerge');merge.append('feMergeNode').attr('in','blur');merge.append('feMergeNode').attr('in','SourceGraphic');
+            var layer=svg.append('g');
+            var link=layer.append('g').selectAll('line').data(links).join('line').attr('class','lab-link'+(mode==='flow'?' is-flowing':''));
+            var halos=layer.append('g').selectAll('circle').data(data.filter(function(d){return d.weight===2;})).join('circle').attr('class','lab-halo').attr('r',13);
+            var node=layer.append('g').selectAll('circle').data(data).join('circle').attr('class','lab-node').attr('r',function(d){return d.weight===2?7:3.1;}).attr('fill',function(d){return palette[d.group];}).attr('stroke','#06243d').attr('stroke-width',2).on('mouseenter',function(event,d){d3.select(this).transition().duration(180).attr('r',d.weight===2?11:7);setReadout('Signal '+String(d.id+1).padStart(2,'0')+' · '+['collection','structure','decision'][d.group]);}).on('mouseleave',function(event,d){d3.select(this).transition().duration(240).attr('r',d.weight===2?7:3.1);setReadout('Hover a signal to inspect the system');});
+            var simulation=d3.forceSimulation(data).alphaDecay(.035).velocityDecay(.35).force('charge',d3.forceManyBody().strength(mode==='cluster'?-26:-42)).force('collide',d3.forceCollide().radius(function(d){return d.weight===2?13:7;}));
+            if(mode==='network') simulation.force('link',d3.forceLink(links).id(function(d){return d.id;}).distance(function(d){return d.source.group===d.target.group?35:62;}).strength(.35)).force('x',d3.forceX(W/2).strength(.045)).force('y',d3.forceY(H/2).strength(.06));
+            if(mode==='flow') simulation.force('link',d3.forceLink(links).id(function(d){return d.id;}).distance(55).strength(.16)).force('x',d3.forceX(function(d){return 95+d.group*185;}).strength(.55)).force('y',d3.forceY(H/2).strength(.07));
+            if(mode==='cluster') simulation.force('x',d3.forceX(function(d){return [160,280,405][d.group];}).strength(.18)).force('y',d3.forceY(function(d){return [95,190,96][d.group];}).strength(.18)).force('link',d3.forceLink(links).id(function(d){return d.id;}).distance(72).strength(.08));
+            node.call(d3.drag().on('start',function(event,d){if(!event.active)simulation.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y;}).on('drag',function(event,d){d.fx=event.x;d.fy=event.y;}).on('end',function(event,d){if(!event.active)simulation.alphaTarget(0);d.fx=null;d.fy=null;}));
+            function renderTick(){
+              data.forEach(function(d){d.x=Math.max(16,Math.min(W-16,d.x));d.y=Math.max(16,Math.min(H-16,d.y));});
+              link.attr('x1',function(d){return d.source.x;}).attr('y1',function(d){return d.source.y;}).attr('x2',function(d){return d.target.x;}).attr('y2',function(d){return d.target.y;});
+              node.attr('cx',function(d){return d.x;}).attr('cy',function(d){return d.y;});halos.attr('cx',function(d){return d.x;}).attr('cy',function(d){return d.y;});
+            }
+            simulation.on('tick',renderTick);
+            if(reduced) { simulation.stop().tick(180); renderTick(); }
+            return function(){simulation.stop();};
+          },[mode]);
+          return h(React.Fragment,null,
+            h('div',{className:'lab-toolbar','aria-label':'Visualization layout'},['network','flow','cluster'].map(function(m){return h('button',{key:m,className:'lab-mode','aria-pressed':mode===m,onClick:function(){setMode(m);}},m.toUpperCase());})),
+            h('svg',{ref:svgRef,className:'lab-canvas','aria-hidden':'true'}),
+            h('div',{className:'lab-readout','aria-live':'polite'},h('strong',null,readout),h('span',null,'DRAG · HOVER · REFRAME'))
+          );
+        }
+        ReactDOM.createRoot(document.getElementById('signal-lab')).render(h(SignalLab));
+
+        var data = [
+          {label:'01 · MODEL', kicker:'01 / MODEL', title:'Find the structure before styling the surface.', body:'Map the domain, the decisions and the edge cases. The interface starts with what people need to understand—not with a component library.', steps:['Domain map','Decision path','Information model']},
+          {label:'02 · MAKE', kicker:'02 / MAKE', title:'Build interaction and explanation together.', body:'Treat behavior, hierarchy and code as one system. D3.js and React each do the work they are best at, without competing for the same DOM.', steps:['Component logic','Visual grammar','Motion behavior']},
+          {label:'03 · REFINE', kicker:'03 / REFINE', title:'Make complexity feel calm under real use.', body:'Test the hard states, remove ornamental noise and strengthen the cues that help people compare, navigate and decide with confidence.', steps:['Edge cases','Accessibility','Performance']}
+        ];
+        function Practice(){
+          var state=React.useState(0),active=state[0],setActive=state[1],item=data[active];
+          function onKey(e){if(e.key==='ArrowRight')setActive((active+1)%data.length);if(e.key==='ArrowLeft')setActive((active+data.length-1)%data.length);}
+          return h('div',{className:'practice-panel'},
+            h('div',{className:'tablist',role:'tablist','aria-label':'Working approach',onKeyDown:onKey},data.map(function(d,i){return h('button',{key:d.label,className:'tab',role:'tab','aria-selected':i===active,tabIndex:i===active?0:-1,onClick:function(){setActive(i);}},d.label);})),
+            h('div',{className:'panel-body',role:'tabpanel',key:active},
+              h('span',{className:'panel-kicker'},item.kicker),
+              h('h3',null,item.title),h('p',null,item.body),
+              h('div',{className:'mini-flow'},item.steps.map(function(s,i){return h('div',{className:'flow-step',key:s},h('b',null,'0'+(i+1)),h('span',null,s));}))
+            )
+          );
+        }
+        ReactDOM.createRoot(document.getElementById('react-practice')).render(h(Practice));
+      }
+    })();
+  </script>
+</body>
+</html>
