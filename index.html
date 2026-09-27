@@ -793,6 +793,305 @@
       .role-track { animation: none; }
       .section-head { transform: none !important; }
     }
+
+    /* Tega-inspired identity pass — orbital badge, purple landing world, pink editorial turn. */
+    :root {
+      --purple-night: #230b44;
+      --purple-ink: #17072f;
+      --pink: #ff5a9d;
+      --pink-hot: #ff3f8a;
+      --pink-pale: #ffd8e9;
+      --acid: #d5ff4b;
+      --paper: #ffd3e5;
+      --surface: #ffedf5;
+      --ink: #2a0c3e;
+      --muted: #6f405d;
+      --line: rgba(42,12,62,.2);
+      --accent: #a21f60;
+      --deep: var(--purple-night);
+      --lime: var(--acid);
+      --shadow: 0 28px 80px rgba(72, 13, 55, .18);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #240d2d;
+        --surface: #32113c;
+        --ink: #fff4f8;
+        --muted: #e3afc9;
+        --line: rgba(255,216,233,.22);
+        --accent: #ff82b5;
+        --deep: #160627;
+        --shadow: 0 28px 80px rgba(0,0,0,.35);
+      }
+    }
+    body { background: var(--paper); }
+    .topbar {
+      z-index: 20;
+      max-width: none;
+      padding: 1.35rem clamp(1.25rem, 4vw, 4rem);
+      background: linear-gradient(180deg, rgba(35,11,68,.88), rgba(35,11,68,0));
+      color: #fff0f8;
+    }
+    .topbar a::after { background: var(--pink); box-shadow: 0 0 14px rgba(255,90,157,.65); }
+
+    .hero {
+      min-height: max(780px, 100svh);
+      grid-template-columns: minmax(0, .88fr) minmax(500px, 1.12fr);
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 72% 48%, rgba(255,90,157,.19), transparent 26%),
+        radial-gradient(circle at 45% 10%, rgba(143,79,216,.18), transparent 32%),
+        var(--purple-night);
+    }
+    .hero::before {
+      z-index: 0;
+      opacity: .32;
+      background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+      background-size: 52px 52px;
+      -webkit-mask-image: radial-gradient(circle at 66% 50%, #000, transparent 72%);
+      mask-image: radial-gradient(circle at 66% 50%, #000, transparent 72%);
+    }
+    .hero-copy {
+      z-index: 4;
+      max-width: 650px;
+      padding: 8.5rem 2rem 7rem max(1.4rem, calc((100vw - 1320px) / 2));
+    }
+    .signal-label { color: #ff9bc3; }
+    .signal-label::before { background: var(--acid); box-shadow: 10px 0 var(--acid); }
+    h1 {
+      max-width: 690px;
+      font-size: clamp(3.5rem, 6.4vw, 7rem);
+      line-height: .87;
+      letter-spacing: -.065em;
+      text-transform: none;
+    }
+    h1 .kinetic-line { white-space: normal; }
+    h1 .kinetic-accent { margin: .08em 0 0; color: #ff7faf; }
+    .hero-lede { max-width: 520px; color: #ddc9ea; }
+    .hero-cta { border-color: rgba(255,127,175,.7); background: rgba(39,10,73,.62); }
+    .hero-cta::before, .cta-arrow { background: var(--pink); }
+    .hero-cta:hover { border-color: var(--pink); color: #260a3c; box-shadow: 0 18px 44px rgba(0,0,0,.3), 0 0 34px rgba(255,90,157,.18); }
+    .hero-cta:hover .cta-label small { color: #57203b; }
+    .hero-cta:hover .cta-arrow { background: var(--purple-ink); color: #fff; transform: none; }
+    .hero-cta .cta-label small { color: #c5a7d4; }
+    .hero-viz { inset: 0; width: 100%; opacity: .12; z-index: 0; }
+    .hero-viz::after { display: none; }
+    .viz-key { display: none; }
+
+    .id-stage {
+      position: relative;
+      z-index: 3;
+      width: min(46vw, 640px);
+      aspect-ratio: 1;
+      justify-self: center;
+      display: grid;
+      place-items: center;
+      margin-right: clamp(1rem, 4vw, 5rem);
+    }
+    .orbit-path {
+      position: absolute;
+      inset: 8%;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 50%;
+      animation: orbitSpin 20s linear infinite;
+    }
+    .orbit-path::before, .orbit-path::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px dashed rgba(255,90,157,.34);
+    }
+    .orbit-path::before { inset: 13%; }
+    .orbit-path::after { inset: 28%; border-color: rgba(213,255,75,.2); }
+    .orbit-path span {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--acid);
+      box-shadow: 0 0 18px rgba(213,255,75,.7);
+    }
+    .orbit-path span:nth-child(1) { top: 5%; left: 24%; }
+    .orbit-path span:nth-child(2) { right: -5px; top: 56%; background: var(--pink); box-shadow: 0 0 18px rgba(255,90,157,.75); }
+    .orbit-path span:nth-child(3) { left: 14%; bottom: 8%; width: 5px; height: 5px; }
+    @keyframes orbitSpin { to { transform: rotate(360deg); } }
+    .orbit-word {
+      position: absolute;
+      z-index: 5;
+      left: 0;
+      top: 0;
+      padding: .48rem .72rem;
+      color: #fff;
+      background: var(--purple-night);
+      border: 1px solid rgba(255,255,255,.18);
+      font: 500 clamp(.61rem, .8vw, .74rem)/1 var(--mono);
+      letter-spacing: .11em;
+      white-space: nowrap;
+      box-shadow: 0 10px 35px rgba(8,1,20,.25);
+      offset-path: ellipse(43% 43% at 50% 50%);
+      offset-rotate: 0deg;
+      animation: orbitWord 18s linear infinite;
+    }
+    .orbit-top { animation-delay: 0s; }
+    .orbit-right { animation-delay: -4.5s; }
+    .orbit-bottom { animation-delay: -9s; }
+    .orbit-left { animation-delay: -13.5s; }
+    @keyframes orbitWord { to { offset-distance: 100%; } }
+    .lanyard {
+      position: absolute;
+      z-index: 1;
+      top: -26%;
+      left: 50%;
+      width: 110px;
+      height: 48%;
+      transform: translateX(-50%);
+      border-left: 18px solid var(--pink);
+      border-right: 18px solid var(--pink-hot);
+      clip-path: polygon(10% 0, 90% 0, 66% 100%, 34% 100%);
+      filter: drop-shadow(0 14px 18px rgba(0,0,0,.22));
+    }
+    .lanyard::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -22px;
+      width: 40px;
+      height: 30px;
+      transform: translateX(-50%);
+      border: 7px solid #c6a3d7;
+      border-radius: 7px;
+      background: #391658;
+    }
+    .id-card {
+      position: relative;
+      z-index: 3;
+      width: min(340px, 56vw);
+      overflow: hidden;
+      color: #2b103e;
+      background: #fff7fb;
+      box-shadow: 0 38px 85px rgba(7,0,18,.48);
+      transform: rotate(2.2deg);
+      animation: badgeSwing 5.4s ease-in-out infinite;
+      transform-origin: 50% -18%;
+    }
+    @keyframes badgeSwing { 0%,100% { transform: rotate(2.2deg) translateY(0); } 50% { transform: rotate(-2deg) translateY(-8px); } }
+    .id-card::before { content: ""; position: absolute; inset: 0 0 auto; height: 8px; background: linear-gradient(90deg, var(--pink) 0 68%, var(--acid) 68%); }
+    .id-card-top { display: flex; justify-content: space-between; gap: 1rem; padding: 1.7rem 1.55rem .9rem; border-bottom: 1px solid #ead9e5; font: 500 .54rem/1 var(--mono); letter-spacing: .09em; }
+    .id-card-top span:first-child { color: #a21f60; font-weight: 700; }
+    .id-card-body { display: grid; grid-template-columns: .8fr 1.2fr; gap: 1.25rem; padding: 1.2rem 1.55rem 1.4rem; }
+    .id-monogram { position: relative; min-height: 160px; display: grid; place-items: center; overflow: hidden; background: var(--purple-night); color: #ff8fbc; }
+    .id-monogram span { position: relative; z-index: 2; font-size: clamp(3rem, 6vw, 5.2rem); font-weight: 700; letter-spacing: -.08em; }
+    .id-monogram i { position: absolute; width: 150%; height: 45%; background: var(--pink); transform: rotate(-16deg); opacity: .22; }
+    .id-details { align-self: end; }
+    .id-details small { display: block; margin-bottom: .65rem; color: #a06d88; font: 500 .5rem/1 var(--mono); letter-spacing: .1em; }
+    .id-details strong { display: block; font-size: clamp(1.6rem, 3vw, 2.15rem); line-height: .88; letter-spacing: -.055em; }
+    .id-details p { margin: .8rem 0 0; color: #6e3d58; font: 500 .65rem/1.45 var(--mono); }
+    .id-card-foot { display: grid; grid-template-columns: 1fr 62px; align-items: center; gap: 1rem; padding: .95rem 1.55rem; background: #ffe2ee; font: 500 .48rem/1 var(--mono); letter-spacing: .07em; }
+    .id-card-foot i { height: 20px; background: repeating-linear-gradient(90deg, #32103f 0 2px, transparent 2px 5px); }
+    .scroll-cue { position: absolute; z-index: 5; right: clamp(1.4rem, 4vw, 4rem); bottom: 1.5rem; display: flex; gap: .7rem; align-items: center; color: #d8bee7; text-decoration: none; font: 500 .65rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .scroll-cue span { color: var(--acid); animation: scrollNudge 1.8s ease-in-out infinite; }
+    @keyframes scrollNudge { 50% { transform: translateY(5px); } }
+
+    .metrics-strip {
+      margin-top: -1px;
+      padding: clamp(4.5rem, 8vw, 8rem) max(1.4rem, calc((100vw - 1240px) / 2));
+      background: var(--pink);
+      color: #2a0c3e;
+    }
+    .about-split { display: grid; grid-template-columns: minmax(220px, .38fr) minmax(0, 1fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: center; }
+    .portrait-frame { position: relative; width: min(100%, 320px); margin: 0; justify-self: center; }
+    .portrait-frame::before { content: ""; position: absolute; inset: 14px -14px -14px 14px; border: 1px solid rgba(42,12,62,.45); }
+    .portrait-frame img { position: relative; z-index: 1; display: block; width: 100%; aspect-ratio: 1; object-fit: cover; filter: saturate(.84) contrast(1.06); }
+    .portrait-frame figcaption { position: relative; z-index: 2; width: max-content; max-width: calc(100% - 1rem); margin: -1.15rem 0 0 1rem; padding: .7rem .85rem; background: var(--purple-night); color: #fff3f8; font: 500 .6rem/1.35 var(--mono); letter-spacing: .06em; }
+    .metrics-statement { display: grid; grid-template-columns: .24fr 1fr; gap: 2rem; align-items: start; margin-bottom: 1.5rem; }
+    .metrics-statement .eyebrow { color: #5b113c; }
+    .metrics-statement h2 { max-width: 850px; font-size: clamp(3rem, 7vw, 7.2rem); line-height: .88; letter-spacing: -.065em; }
+    .about-lede { max-width: 660px; margin: 0 0 clamp(2.5rem, 5vw, 4.5rem) calc(24% + 2rem); color: #5f173f; font-size: clamp(1rem, 1.5vw, 1.2rem); }
+    .metrics-inner { max-width: none; grid-template-columns: repeat(2, 1fr); background: rgba(42,12,62,.25); }
+    .metric { min-height: 170px; display: grid; align-content: space-between; gap: 1rem; padding: 1.7rem; background: rgba(255,255,255,.12); color: #2a0c3e; text-decoration: none; }
+    .metric::after { background: #2a0c3e; }
+    .metric > span { color: #6e1749; font: 500 .66rem/1 var(--mono); }
+    .metric strong { margin: 0; color: #2a0c3e; font-size: clamp(2.2rem, 4vw, 4.3rem); line-height: .9; letter-spacing: -.045em; }
+    .metric small { color: #612846; font: 500 .7rem/1.4 var(--mono); }
+    .metric-source { align-self: end; opacity: .84; }
+
+    .section { padding-top: 8rem; padding-bottom: 8rem; }
+    .section::before { color: rgba(78,18,60,.07); }
+    .section-head .eyebrow, .eyebrow { color: var(--accent); }
+    .work-index { border-color: var(--line); }
+    .work-index::before { background: linear-gradient(100deg, rgba(255,63,138,.14), transparent 55%); }
+    .work-number { color: rgba(92,22,65,.14); }
+    .project h3 > span:last-child { color: var(--accent); }
+    .project-stage { background: var(--purple-night); }
+    .project-stage::before { background-image: linear-gradient(rgba(255,90,157,.09) 1px, transparent 1px), linear-gradient(90deg, rgba(255,90,157,.09) 1px, transparent 1px); }
+    .project-stage::after { background: radial-gradient(circle at var(--stage-x, 50%) var(--stage-y, 50%), rgba(255,90,157,.2), transparent 30%); }
+    .lab-mode { border-color: rgba(255,127,175,.4); background: rgba(35,11,68,.75); color: #e8b8d0; }
+    .lab-mode[aria-pressed="true"] { color: #2a0c3e; border-color: var(--pink); background: var(--pink); box-shadow: 0 8px 24px rgba(255,90,157,.2); }
+    .lab-mode[aria-pressed="true"]::after { background: #2a0c3e; }
+    .lab-mode[aria-pressed="true"]:hover { color: #2a0c3e; }
+    .lab-mode:hover { border-color: #ff9fc6; }
+    .stage-top, .stage-bottom, .lab-readout { color: #d2a9c6; }
+    .lab-readout strong, .stage-title { color: #fff5fa; }
+    .history { background: var(--surface); }
+    .history::after { background: linear-gradient(90deg, var(--pink-hot), var(--line) 22%, transparent); }
+    .timeline-item:first-child::before { background: var(--pink); border-color: var(--ink); }
+    .timeline-item::before { background: var(--surface); box-shadow: 0 0 0 5px var(--surface); }
+    .about-card { margin: 0 0 3rem; padding-bottom: 2.4rem; border-bottom: 1px solid var(--line); }
+    .about-mark { width: 88px; height: 108px; display: grid; place-items: end start; margin-bottom: 1.2rem; padding: .8rem; background: var(--purple-night); color: var(--pink); font-size: 2.2rem; font-weight: 700; letter-spacing: -.08em; }
+    .about-card p { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.6; }
+    .closing { background: var(--purple-night); }
+    .closing::before { color: rgba(255,90,157,.055); }
+    .closing .eyebrow, .contact-line { color: #ff9fc6; }
+    .contact-line::before { background: var(--pink); }
+    .contact-link { border-color: rgba(255,127,175,.55); }
+    .contact-link::before { background: var(--pink); }
+    .contact-link::after { border-color: var(--pink); }
+    .contact-link span { color: var(--pink); }
+    .contact-link:hover { border-color: var(--pink); color: #2a0c3e; box-shadow: 0 14px 36px rgba(0,0,0,.3), 0 0 24px rgba(255,90,157,.18); }
+    .contact-link:hover span { color: #2a0c3e; }
+    .cursor-core { background: var(--pink); box-shadow: 0 0 12px rgba(255,90,157,.8); }
+    .cursor-ring { border-color: rgba(255,159,198,.72); }
+    .scroll-index span { background: var(--pink); box-shadow: 0 0 10px rgba(255,90,157,.6); }
+
+    @media (max-width: 1000px) {
+      .hero { grid-template-columns: minmax(0, .85fr) minmax(430px, 1.15fr); }
+      .id-stage { width: min(52vw, 560px); margin-right: 1rem; }
+      .id-card { width: min(310px, 54vw); }
+    }
+    @media (max-width: 900px) {
+      .hero { display: grid; grid-template-columns: 1fr; min-height: auto; padding-bottom: 4rem; }
+      .hero-copy { padding: 7rem 1.4rem 1.5rem; }
+      .id-stage { width: min(88vw, 620px); margin: 0 auto; }
+      .hero-viz { position: absolute; height: 100%; min-height: 0; margin: 0; }
+      .scroll-cue { display: none; }
+      .about-split { grid-template-columns: minmax(190px, .34fr) minmax(0, 1fr); gap: 2.5rem; }
+      .metrics-statement { grid-template-columns: 1fr; gap: 1rem; }
+      .about-lede { margin-left: 0; }
+    }
+    @media (max-width: 640px) {
+      .topbar { justify-content: flex-end; gap: 1rem; padding-inline: 1.15rem; }
+      .topbar a { font-size: .68rem; }
+      .hero-copy { padding-top: 6rem; }
+      h1 { font-size: clamp(3.2rem, 15vw, 4.8rem); }
+      .hero-lede { font-size: 1rem; }
+      .id-stage { width: min(94vw, 480px); min-height: 420px; }
+      .id-card { width: min(285px, 65vw); }
+      .id-card-body { grid-template-columns: .8fr 1.2fr; gap: .85rem; padding-inline: 1rem; }
+      .id-card-top, .id-card-foot { padding-left: 1rem; padding-right: 1rem; }
+      .id-monogram { min-height: 140px; }
+      .orbit-word { font-size: .53rem; }
+      .metrics-strip { padding: 4.5rem 1.3rem; }
+      .about-split { grid-template-columns: 1fr; gap: 3.5rem; }
+      .portrait-frame { width: min(72vw, 280px); }
+      .metrics-statement h2 { font-size: clamp(3rem, 15vw, 4.5rem); }
+      .metrics-inner { grid-template-columns: 1fr; }
+      .metric { min-height: 128px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .orbit-path, .orbit-word, .id-card, .scroll-cue span { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -807,27 +1106,55 @@
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="signal-label">Public health × data visualization</p>
-        <h1 id="hero-title" aria-label="Tirumalesh Areti"><span class="kinetic-line" aria-hidden="true">Tirumalesh</span><span class="kinetic-line kinetic-accent" aria-hidden="true">Areti</span></h1>
-        <div class="role-ticker" aria-label="Professional roles">
-          <span class="role-label">Working across</span>
-          <span class="role-window"><span class="role-track"><span>Lead Developer</span><span>Data Visualization Engineer</span><span>Front-end Systems Builder</span><span aria-hidden="true">Lead Developer</span></span></span>
-        </div>
-        <p class="hero-lede">Building CDC’s SUDORS overdose-surveillance platform with React, D3.js and TypeScript.</p>
+        <p class="signal-label">Lead developer · SUDORS @ CDC</p>
+        <h1 id="hero-title" aria-label="Data made clear"><span class="kinetic-line" aria-hidden="true">Data made</span><span class="kinetic-line kinetic-accent" aria-hidden="true">clear.</span></h1>
+        <p class="hero-lede">I build public-health interfaces that turn dense surveillance data into something people can understand and use.</p>
         <div class="hero-actions">
-          <a class="hero-cta" href="#work"><span class="cta-label"><strong>Explore SUDORS</strong><small>Interactive case study</small></span><span class="cta-arrow" aria-hidden="true">↘</span></a>
-          <span class="hero-note">Move across the field · click to pulse</span>
+          <a class="hero-cta" href="#work"><span class="cta-label"><strong>See selected work</strong><small>SUDORS interactive study</small></span><span class="cta-arrow" aria-hidden="true">↓</span></a>
         </div>
       </div>
+
+      <div class="id-stage" aria-label="Tirumalesh Areti identity card surrounded by development specialties">
+        <div class="orbit-path" aria-hidden="true"><span></span><span></span><span></span></div>
+        <span class="orbit-word orbit-top">DEVELOPER</span>
+        <span class="orbit-word orbit-right">DATA VISUALIZATION</span>
+        <span class="orbit-word orbit-bottom">D3.JS</span>
+        <span class="orbit-word orbit-left">REACT</span>
+        <div class="lanyard" aria-hidden="true"><span></span></div>
+        <article class="id-card">
+          <div class="id-card-top"><span>SUDORS</span><span>PUBLIC HEALTH SYSTEMS</span></div>
+          <div class="id-card-body">
+            <div class="id-monogram" aria-hidden="true"><span>TA</span><i></i></div>
+            <div class="id-details">
+              <small>IDENTITY / ROLE</small>
+              <strong>Tirumalesh<br />Areti</strong>
+              <p>Lead Developer<br />SUDORS @ CDC</p>
+            </div>
+          </div>
+          <div class="id-card-foot"><span>REACT · D3.JS · TYPESCRIPT</span><i aria-hidden="true"></i></div>
+        </article>
+      </div>
       <div class="hero-viz" aria-hidden="true"><canvas id="field"></canvas></div>
-      <div class="viz-key" aria-hidden="true"><span><i></i> signal</span><span><i></i> focus</span></div>
+      <a class="scroll-cue" href="#work">Scroll to work <span aria-hidden="true">↓</span></a>
     </section>
 
-    <section class="metrics-strip" aria-label="Professional focus">
-      <div class="metrics-inner">
-        <div class="metric"><strong>Lead Developer</strong><span>End-to-end product and interface development</span></div>
-        <div class="metric"><strong>React + TypeScript</strong><span>Durable, component-led front ends</span></div>
-        <div class="metric"><strong>D3.js</strong><span>Data translated into visual systems</span></div>
+    <section class="metrics-strip" aria-labelledby="about-title">
+      <div class="about-split">
+        <figure class="portrait-frame">
+          <img src="data:image/jpeg;base64,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" alt="Tirumalesh Areti standing by the waterfront" />
+          <figcaption>TIRUMALESH ARETI · LEAD DEVELOPER</figcaption>
+        </figure>
+        <div class="about-story">
+          <div class="metrics-statement">
+            <p class="eyebrow">About me</p>
+            <h2 id="about-title">I build systems people actually use.</h2>
+          </div>
+          <p class="about-lede">Front-end engineering, data visualization and public-health systems—brought together to make complex information clear.</p>
+          <div class="metrics-inner" aria-label="Verified experience highlights">
+            <a class="metric" href="https://www.linkedin.com/in/tirumalesh12345/" target="_blank" rel="noreferrer"><span>National reach</span><strong>49 jurisdictions</strong><small class="metric-source">SUDORS experience · LinkedIn ↗</small></a>
+            <a class="metric" href="https://www.linkedin.com/in/tirumalesh12345/" target="_blank" rel="noreferrer"><span>Sep 2023 — present</span><strong>3 years</strong><small class="metric-source">Building SUDORS interfaces · LinkedIn ↗</small></a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -892,6 +1219,10 @@
           </article>
         </div>
         <aside class="education" aria-labelledby="education-title">
+          <div class="about-card">
+            <div class="about-mark" aria-hidden="true">TA</div>
+            <p>Developer by craft. Visual thinker by instinct. Focused on turning difficult public-health information into clear, durable digital tools.</p>
+          </div>
           <p class="eyebrow">Education</p>
           <h3 id="education-title">Computer science foundation</h3>
           <div class="degree">
