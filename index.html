@@ -1255,6 +1255,203 @@
       .badge-rig { animation: none !important; opacity: 1; transform: none; }
       .id-card { animation: none !important; transform: none; }
     }
+
+    /* A legible SUDORS story: evidence enters, the platform structures it, teams see one picture. */
+    .sudors-stage {
+      padding: 1.55rem;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(255,90,157,.16), transparent 30%),
+        #210d43;
+    }
+    .sudors-stage .stage-visual { min-height: 440px; }
+    .sudors-flow {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(150px,1fr) 52px minmax(160px,1fr) 52px minmax(150px,1fr);
+      align-items: center;
+      gap: .35rem;
+    }
+    .flow-column {
+      position: relative;
+      min-width: 0;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: .8rem;
+      padding: 1.25rem;
+      border: 1px solid rgba(255,215,233,.2);
+      border-radius: 0;
+      overflow: hidden;
+      background: rgba(255,255,255,.035);
+      color: #fff7fb;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .3s ease, background .3s ease, transform .3s cubic-bezier(.16,1,.3,1);
+    }
+    .flow-column::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,90,157,.12), transparent 55%);
+      opacity: 0;
+      transition: opacity .3s ease;
+    }
+    .flow-column:hover,
+    .flow-column[aria-pressed="true"] {
+      border-color: rgba(255,127,175,.8);
+      background: rgba(255,90,157,.1);
+      transform: translateY(-4px);
+    }
+    .flow-column[aria-pressed="true"]::before { opacity: 1; }
+    .flow-column > * { position: relative; z-index: 1; }
+    .flow-step {
+      color: #ff91bc;
+      font: 500 .58rem/1 var(--mono);
+      letter-spacing: .1em;
+    }
+    .flow-column > strong {
+      display: block;
+      max-width: 100%;
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      line-height: .98;
+      letter-spacing: -.035em;
+    }
+    .flow-column small {
+      color: #d6b8df;
+      font: 500 .58rem/1.45 var(--mono);
+    }
+    .source-stack { width: 100%; display: grid; gap: .45rem; }
+    .source-stack i {
+      display: grid;
+      grid-template-columns: 1.65rem 1fr;
+      align-items: center;
+      gap: .5rem;
+      padding: .55rem;
+      border-top: 1px solid rgba(255,255,255,.12);
+      color: #e8d9ef;
+      font: normal 500 .55rem/1.35 var(--mono);
+    }
+    .source-stack b {
+      display: grid;
+      width: 1.65rem;
+      height: 1.65rem;
+      place-items: center;
+      background: #ff5a9d;
+      color: #2a0c3e;
+      font-size: .52rem;
+    }
+    .platform-column { align-items: center; text-align: center; background: rgba(255,90,157,.08); }
+    .platform-mark {
+      display: grid;
+      width: 82px;
+      height: 82px;
+      place-items: center;
+      background: #ff5a9d;
+      color: #2a0c3e;
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1;
+      box-shadow: 0 0 0 10px rgba(255,90,157,.08), 0 0 42px rgba(255,90,157,.28);
+      animation: platformPulse 3s ease-in-out infinite;
+    }
+    @keyframes platformPulse { 50% { box-shadow: 0 0 0 17px rgba(255,90,157,.04), 0 0 58px rgba(255,90,157,.38); } }
+    .flow-rail { position: relative; height: 2px; background: rgba(255,255,255,.15); overflow: visible; }
+    .flow-rail::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid #ff9bc3;
+      border-right: 1px solid #ff9bc3;
+      transform: translateY(-50%) rotate(45deg);
+    }
+    .flow-rail span {
+      position: absolute;
+      top: -3px;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d5ff4b;
+      box-shadow: 0 0 14px rgba(213,255,75,.72);
+      animation: dataTravel 2.2s linear infinite;
+    }
+    .flow-rail span:nth-child(2) { animation-delay: -.74s; }
+    .flow-rail span:nth-child(3) { animation-delay: -1.48s; }
+    @keyframes dataTravel { from { transform: translateX(0); opacity: 0; } 16%,84% { opacity: 1; } to { transform: translateX(48px); opacity: 0; } }
+    .outcome-column > strong { display: flex; flex-direction: column; align-items: flex-start; gap: .45rem; font-size: clamp(1rem, 1.25vw, 1.3rem); }
+    .outcome-column em { color: #d5ff4b; font-style: normal; font-size: clamp(2.7rem, 4.8vw, 4.8rem); line-height: .7; }
+    .jurisdiction-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .jurisdiction-grid i {
+      aspect-ratio: 1;
+      background: rgba(255,255,255,.16);
+      animation: jurisdictionSignal 3.5s ease-in-out infinite;
+    }
+    .jurisdiction-grid i:nth-child(5n) { background: #ff5a9d; }
+    .jurisdiction-grid i:nth-child(7n) { background: #d5ff4b; }
+    @keyframes jurisdictionSignal { 50% { opacity: .42; } }
+    .flow-readout {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      min-height: 44px;
+      padding-top: .85rem;
+      border-top: 1px solid rgba(255,215,233,.18);
+      color: #d2a9c6;
+      font: .62rem/1.4 var(--mono);
+    }
+    .flow-readout strong { color: #fff5fa; font-weight: 500; }
+    .flow-readout span { text-align: right; }
+    @media (max-width: 1120px) {
+      .sudors-flow { grid-template-columns: minmax(130px,1fr) 34px minmax(140px,1fr) 34px minmax(130px,1fr); }
+      .flow-column { padding: 1rem; }
+      .source-stack i { grid-template-columns: 1.5rem 1fr; padding-inline: .3rem; }
+      @keyframes dataTravel { from { transform: translateX(0); opacity: 0; } 16%,84% { opacity: 1; } to { transform: translateX(30px); opacity: 0; } }
+    }
+    @media (max-width: 900px) {
+      .sudors-stage .stage-visual { min-height: 520px; }
+      .sudors-flow { grid-template-columns: minmax(150px,1fr) 42px minmax(160px,1fr) 42px minmax(150px,1fr); }
+      .flow-column { min-height: 310px; }
+      @keyframes dataTravel { from { transform: translateX(0); opacity: 0; } 16%,84% { opacity: 1; } to { transform: translateX(38px); opacity: 0; } }
+    }
+    @media (max-width: 640px) {
+      .sudors-stage { padding: 1.2rem; }
+      .sudors-stage .stage-top { gap: 1rem; }
+      .sudors-stage .stage-top span:last-child { text-align: right; }
+      .sudors-stage .stage-visual { min-height: 820px; }
+      .sudors-flow {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 42px auto 42px auto;
+        gap: 0;
+        padding: 1.2rem 0;
+      }
+      .flow-column { min-height: 205px; width: 100%; }
+      .source-column { min-height: 255px; }
+      .flow-rail { width: 2px; height: 42px; margin: auto; }
+      .flow-rail::after { right: auto; left: 50%; top: auto; bottom: 0; transform: translateX(-50%) rotate(135deg); }
+      .flow-rail span { top: 0; left: -3px; }
+      @keyframes dataTravel { from { transform: translateY(0); opacity: 0; } 16%,84% { opacity: 1; } to { transform: translateY(38px); opacity: 0; } }
+      .platform-column { min-height: 240px; }
+      .outcome-column { min-height: 250px; }
+      .jurisdiction-grid { max-width: 260px; }
+      .flow-readout { align-items: flex-start; flex-direction: column; }
+      .flow-readout span { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .platform-mark, .flow-rail span, .jurisdiction-grid i { animation: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -1334,20 +1531,39 @@
             <div class="tags" aria-label="Technologies"><span class="tag">REACT</span><span class="tag">D3.JS</span><span class="tag">TYPESCRIPT</span><span class="tag">DATA VISUALIZATION</span></div>
           </div>
         </div>
-        <div class="project-stage" aria-label="Abstract animated visualization representing connected surveillance signals">
-          <div class="stage-top"><span class="stage-title">SYSTEM VIEW</span><span>INTERACTIVE VISUAL STUDY</span></div>
+        <div class="project-stage sudors-stage" aria-label="How SUDORS turns case evidence into a shared 49-jurisdiction surveillance view">
+          <div class="stage-top"><span class="stage-title">HOW SUDORS WORKS</span><span>CASE EVIDENCE → SHARED SURVEILLANCE</span></div>
           <div class="stage-visual">
-            <div id="signal-lab" class="signal-lab" aria-label="Interactive surveillance signal network">
-              <div class="lab-toolbar" aria-label="Visualization layout">
-                <button class="lab-mode" data-fallback-mode="network" aria-pressed="true">NETWORK</button>
-                <button class="lab-mode" data-fallback-mode="flow" aria-pressed="false">FLOW</button>
-                <button class="lab-mode" data-fallback-mode="cluster" aria-pressed="false">CLUSTER</button>
-              </div>
-              <svg class="lab-canvas fallback-canvas" viewBox="0 0 560 270" aria-hidden="true"></svg>
-              <div class="lab-readout" aria-live="polite"><strong>Explore the signal network</strong><span>SELECT · REFRAME</span></div>
+            <div class="sudors-flow" aria-label="Three-stage SUDORS data workflow">
+              <button class="flow-column source-column" type="button" data-flow-step="collect" aria-pressed="true">
+                <span class="flow-step">01 · COLLECT</span>
+                <strong>Case evidence</strong>
+                <span class="source-stack" aria-hidden="true">
+                  <i><b>ME</b> Medical examiner / coroner</i>
+                  <i><b>TX</b> Toxicology laboratory</i>
+                  <i><b>DR</b> Death record</i>
+                </span>
+              </button>
+              <div class="flow-rail rail-in" aria-hidden="true"><span></span><span></span><span></span></div>
+              <button class="flow-column platform-column" type="button" data-flow-step="standardize" aria-pressed="false">
+                <span class="flow-step">02 · STANDARDIZE</span>
+                <span class="platform-mark" aria-hidden="true">S</span>
+                <strong>SUDORS platform</strong>
+                <small>Link · validate · structure</small>
+              </button>
+              <div class="flow-rail rail-out" aria-hidden="true"><span></span><span></span><span></span></div>
+              <button class="flow-column outcome-column" type="button" data-flow-step="act" aria-pressed="false">
+                <span class="flow-step">03 · UNDERSTAND</span>
+                <strong><em>49</em> jurisdictions</strong>
+                <span class="jurisdiction-grid" aria-hidden="true"></span>
+                <small>One shared surveillance view</small>
+              </button>
             </div>
           </div>
-          <div class="stage-bottom"><span>RAW SIGNAL</span><span>STRUCTURE</span><span>DECISION SUPPORT</span></div>
+          <div class="flow-readout" aria-live="polite">
+            <strong>Collect the evidence behind each overdose case.</strong>
+            <span>Select a stage to follow the data</span>
+          </div>
         </div>
       </article>
     </section>
@@ -1420,8 +1636,6 @@
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
   <script>
     (function () {
       var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1620,6 +1834,27 @@
         });
         document.documentElement.addEventListener('mouseleave',function(){cursorCore.style.opacity='0';cursorRing.style.opacity='0';});
       }
+
+      var jurisdictionGrid=document.querySelector('.jurisdiction-grid');
+      if(jurisdictionGrid){
+        for(var ji=0;ji<49;ji++){
+          var cell=document.createElement('i');
+          cell.style.animationDelay=(-((ji%11)*.17)).toFixed(2)+'s';
+          jurisdictionGrid.appendChild(cell);
+        }
+      }
+      var flowCopy={
+        collect:'Collect the evidence behind each overdose case.',
+        standardize:'Link, validate and structure the record in one system.',
+        act:'Turn consistent records into a shared view across 49 jurisdictions.'
+      };
+      document.querySelectorAll('[data-flow-step]').forEach(function(button){
+        button.addEventListener('click',function(){
+          document.querySelectorAll('[data-flow-step]').forEach(function(item){ item.setAttribute('aria-pressed',String(item===button)); });
+          var readout=document.querySelector('.flow-readout strong');
+          if(readout) readout.textContent=flowCopy[button.getAttribute('data-flow-step')];
+        });
+      });
 
       var fallbackRoot=document.getElementById('signal-lab');
       var fallbackSvg=fallbackRoot&&fallbackRoot.querySelector('.fallback-canvas');
