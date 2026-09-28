@@ -1553,6 +1553,116 @@
       .orbit-word, .badge-rig { animation: none !important; }
       .id-card-inner { transition-duration: .001ms !important; }
     }
+
+    /* Responsive production pass: one composition, tuned independently for wide and narrow screens. */
+    .mobile-only { display: none; }
+    @media (min-width: 901px) {
+      .hero {
+        min-height: 100svh;
+        padding: clamp(4.5rem, 7vh, 6.5rem) clamp(2rem, 5vw, 5rem) clamp(2.5rem, 5vh, 4rem);
+      }
+      .id-stage {
+        width: min(100%, 1360px);
+        height: clamp(650px, calc(100svh - 7rem), 820px);
+        min-height: 650px;
+      }
+      .badge-rig { width: min(48vw, 620px); left: 50%; transform: translateX(-50%); }
+      @keyframes badgeDrop {
+        from { transform: translate(-50%, -120vh); }
+        to { transform: translate(-50%, 0); }
+      }
+      .id-card { width: clamp(290px, 25vw, 350px); }
+      .orbit-top { left: 0; top: 9%; }
+      .orbit-right { right: 0; top: 17%; }
+      .orbit-bottom { left: 4%; bottom: 12%; }
+      .orbit-left { right: 5%; bottom: 8%; }
+      .about-split { max-width: 1240px; margin: 0 auto; }
+    }
+    @media (min-width: 641px) and (max-width: 900px) {
+      .hero { min-height: 820px; padding: 4.5rem 1.4rem 2rem; }
+      .id-stage { width: min(100%, 780px); height: 740px; min-height: 740px; }
+      .id-card { width: clamp(275px, 40vw, 315px); }
+      .orbit-word { font-size: clamp(3rem, 8.5vw, 5rem); }
+      .about-split { grid-template-columns: minmax(180px, .34fr) minmax(0, 1fr); }
+      .project-copy { min-height: 520px; }
+      .sudors-stage { min-height: 570px; }
+    }
+    @media (max-width: 640px) {
+      .desktop-only { display: none; }
+      .mobile-only { display: inline; }
+      .topbar {
+        width: 100%;
+        justify-content: center;
+        gap: clamp(.85rem, 6vw, 1.5rem);
+        padding: 1rem max(1rem, env(safe-area-inset-right)) 2.2rem max(1rem, env(safe-area-inset-left));
+      }
+      .topbar a { min-height: 36px; display: inline-flex; align-items: center; }
+      .hero {
+        min-height: 700px;
+        padding: 3.9rem .85rem 1.25rem;
+      }
+      .id-stage {
+        width: calc(100vw - 1.7rem);
+        max-width: calc(100vw - 1.7rem);
+        min-width: 0;
+        height: 640px;
+        min-height: 640px;
+        aspect-ratio: auto;
+      }
+      .badge-rig { inset: 0; }
+      .id-card { width: min(68vw, 258px); }
+      .id-card-top { padding-top: 1.45rem; }
+      .id-card-top span:first-child { font-size: .58rem; }
+      .id-card-body { grid-template-columns: .78fr 1.22fr; gap: .7rem; padding: 1rem; }
+      .id-monogram { min-height: 118px; }
+      .id-details strong { font-size: clamp(1.45rem, 7vw, 1.9rem); }
+      .id-details p { font-size: .58rem; }
+      .id-card-foot { grid-template-columns: 1fr 48px; padding-block: .75rem; }
+      .id-card-back { min-height: 224px; padding: 1.45rem; }
+      .id-card-back strong { font-size: clamp(2rem, 10vw, 2.75rem); }
+      .lanyard { height: 39%; }
+      .orbit-word { font-size: clamp(2rem, 10.2vw, 3rem); line-height: .86; }
+      .orbit-top { left: 0; top: 7%; }
+      .orbit-right { right: 0; top: 22%; width: 48%; }
+      .orbit-bottom { left: 1%; bottom: 13%; }
+      .orbit-left { right: 2%; bottom: 5%; }
+      .metrics-strip { padding: 4rem 1rem; }
+      .about-split { gap: 3rem; }
+      .portrait-frame { width: min(70vw, 270px); }
+      .metrics-statement h2 { font-size: clamp(2.65rem, 13.5vw, 4rem); }
+      .metrics-inner { gap: 1px; }
+      .metric { min-height: 122px; padding: 1.35rem; }
+      .metric strong { font-size: clamp(2.1rem, 10vw, 3rem); }
+      .section { padding: 5rem 1rem; }
+      .section::before { right: .6rem; top: 2.8rem; }
+      .section-head { gap: 1rem; margin-bottom: 2.8rem; }
+      .section-head h2 { font-size: clamp(2.45rem, 12vw, 3.7rem); overflow-wrap: anywhere; }
+      .project-copy { min-height: 520px; padding: 1.5rem 1.1rem 1.7rem; }
+      .project h3 { font-size: clamp(2.35rem, 12vw, 3.5rem); }
+      .view-cue { font-size: .62rem; }
+      .project-stage { min-height: 940px; padding: 1rem; }
+      .sudors-stage .stage-visual { min-height: 820px; }
+      .stage-top { align-items: flex-start; gap: .7rem; }
+      .stage-top span { max-width: 50%; }
+      .career-layout { gap: 3.5rem; }
+      .timeline-copy h3 { font-size: 1.45rem; }
+      .timeline-org { overflow-wrap: anywhere; }
+      .skill-list { gap: .45rem; }
+      .skill { padding: .55rem .65rem; }
+      .closing .section { padding-top: 5rem; padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
+      .closing h2 { font-size: clamp(2.45rem, 12vw, 3.7rem); }
+      .contact-line { align-items: flex-start; font-size: .7rem; line-height: 1.45; }
+      .contact-line::before { flex: 0 0 38px; margin-top: .45rem; }
+      .contact-link { min-width: 0; width: 100%; }
+    }
+    @media (max-width: 380px) {
+      .hero { min-height: 660px; padding-inline: .65rem; }
+      .id-stage { height: 600px; min-height: 600px; }
+      .id-card { width: min(70vw, 238px); }
+      .orbit-word { font-size: clamp(1.85rem, 10vw, 2.5rem); }
+      .project-copy { padding-inline: 1rem; }
+      .sudors-stage { padding-inline: .8rem; }
+    }
   </style>
 </head>
 <body>
@@ -1635,7 +1745,7 @@
             <p>Leading application development for the State Unintentional Drug Overdose Reporting System—shaping the experience from architecture through interactive visualization.</p>
           </div>
           <div class="project-meta">
-            <span class="view-cue">Hover · focus · reframe <b aria-hidden="true">↘</b></span>
+            <span class="view-cue"><span class="desktop-only">Hover · focus · reframe</span><span class="mobile-only">Tap each stage · follow the flow</span> <b aria-hidden="true">↘</b></span>
             <div class="tags" aria-label="Technologies"><span class="tag">REACT</span><span class="tag">D3.JS</span><span class="tag">TYPESCRIPT</span><span class="tag">DATA VISUALIZATION</span></div>
           </div>
         </div>
