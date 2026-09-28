@@ -1208,40 +1208,33 @@
       .id-card { animation: none !important; transform: none; }
     }
 
-    /* Badge entrance: the full lanyard drops into frame, reveals its back, then turns to face front. */
-    .id-stage { perspective: 1400px; }
+    /* Badge entrance: the card drops in front-facing, bounces once, then settles into a gentle lanyard sway. */
     .badge-rig {
       position: absolute;
       inset: 0;
       display: grid;
       place-items: center;
-      transform-style: preserve-3d;
       will-change: transform, opacity;
-      animation: badgeDropTurn 2.4s cubic-bezier(.16,.78,.24,1) both;
+      animation: badgeDrop 1.15s cubic-bezier(.16,.78,.24,1) both;
     }
-    @keyframes badgeDropTurn {
-      0% { opacity: 0; transform: translate3d(0, -105vh, 0) rotateY(178deg) rotateZ(-8deg); }
-      12% { opacity: 1; }
-      58% { transform: translate3d(0, 4.5%, 0) rotateY(76deg) rotateZ(3deg); }
-      78% { transform: translate3d(0, -2.2%, 0) rotateY(13deg) rotateZ(-1.2deg); }
-      90% { transform: translate3d(0, .8%, 0) rotateY(3deg) rotateZ(.4deg); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0); }
+    @keyframes badgeDrop {
+      0% { opacity: 0; transform: translateY(-82vh) rotate(-7deg); }
+      18% { opacity: 1; }
+      68% { transform: translateY(4.5%) rotate(2.2deg); }
+      84% { transform: translateY(-1.8%) rotate(-1deg); }
+      100% { opacity: 1; transform: translateY(0) rotate(0); }
     }
     .id-card {
       overflow: visible;
       background: transparent;
-      transform-style: preserve-3d;
-      animation: badgeSwing 5.6s ease-in-out 2.4s infinite both;
+      animation: badgeSwing 5.6s ease-in-out 1.15s infinite both;
     }
     .id-card::before { display: none; }
-    .id-card-front,
-    .id-card-back {
+    .id-card-front {
+      position: relative;
       overflow: hidden;
       background: #fff7fb;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
     }
-    .id-card-front { position: relative; }
     .id-card-front::before {
       content: "";
       position: absolute;
@@ -1249,49 +1242,6 @@
       inset: 0 0 auto;
       height: 8px;
       background: linear-gradient(90deg, var(--pink) 0 68%, var(--acid) 68%);
-    }
-    .id-card-back {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-rows: 1fr auto auto;
-      align-items: end;
-      gap: .85rem;
-      padding: 1.6rem;
-      color: #2b103e;
-      transform: rotateY(180deg);
-    }
-    .id-card-back::before {
-      content: "";
-      position: absolute;
-      inset: 0 0 auto;
-      height: 8px;
-      background: linear-gradient(90deg, var(--acid) 0 32%, var(--pink) 32%);
-    }
-    .id-card-back::after {
-      content: "";
-      position: absolute;
-      width: 180px;
-      height: 180px;
-      right: -72px;
-      top: -55px;
-      border: 1px solid rgba(162,31,96,.2);
-      border-radius: 50%;
-      box-shadow: 0 0 0 28px rgba(255,90,157,.07), 0 0 0 55px rgba(46,27,94,.045);
-    }
-    .back-mark {
-      align-self: center;
-      font-size: 4.8rem;
-      font-weight: 700;
-      line-height: .8;
-      letter-spacing: -.09em;
-      color: var(--purple-night);
-    }
-    .back-label { font: 700 .63rem/1 var(--mono); letter-spacing: .12em; }
-    .id-card-back > i {
-      display: block;
-      height: 28px;
-      background: repeating-linear-gradient(90deg, #32103f 0 2px, transparent 2px 5px);
     }
     @media (max-width: 640px) {
       .id-card {
@@ -1337,12 +1287,7 @@
                   <p>Lead Developer<br />SUDORS @ CDC</p>
                 </div>
               </div>
-              <div class="id-card-foot"><span>REACT · D3.JS · TYPESCRIPT</span><i aria-hidden="true"></i></div>
-            </div>
-            <div class="id-card-back" aria-hidden="true">
-              <span class="back-mark">TA</span>
-              <span class="back-label">SUDORS · CDC</span>
-              <i></i>
+              <div class="id-card-foot"><span>LEAD DEVELOPER · SUDORS</span><i aria-hidden="true"></i></div>
             </div>
           </article>
         </div>
