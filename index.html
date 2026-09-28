@@ -1207,6 +1207,104 @@
     @media (prefers-reduced-motion: reduce) {
       .id-card { animation: none !important; transform: none; }
     }
+
+    /* Badge entrance: the full lanyard drops into frame, reveals its back, then turns to face front. */
+    .id-stage { perspective: 1400px; }
+    .badge-rig {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      animation: badgeDropTurn 2.4s cubic-bezier(.16,.78,.24,1) both;
+    }
+    @keyframes badgeDropTurn {
+      0% { opacity: 0; transform: translate3d(0, -105vh, 0) rotateY(178deg) rotateZ(-8deg); }
+      12% { opacity: 1; }
+      58% { transform: translate3d(0, 4.5%, 0) rotateY(76deg) rotateZ(3deg); }
+      78% { transform: translate3d(0, -2.2%, 0) rotateY(13deg) rotateZ(-1.2deg); }
+      90% { transform: translate3d(0, .8%, 0) rotateY(3deg) rotateZ(.4deg); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0); }
+    }
+    .id-card {
+      overflow: visible;
+      background: transparent;
+      transform-style: preserve-3d;
+      animation: badgeSwing 5.6s ease-in-out 2.4s infinite both;
+    }
+    .id-card::before { display: none; }
+    .id-card-front,
+    .id-card-back {
+      overflow: hidden;
+      background: #fff7fb;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .id-card-front { position: relative; }
+    .id-card-front::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      inset: 0 0 auto;
+      height: 8px;
+      background: linear-gradient(90deg, var(--pink) 0 68%, var(--acid) 68%);
+    }
+    .id-card-back {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      align-items: end;
+      gap: .85rem;
+      padding: 1.6rem;
+      color: #2b103e;
+      transform: rotateY(180deg);
+    }
+    .id-card-back::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 8px;
+      background: linear-gradient(90deg, var(--acid) 0 32%, var(--pink) 32%);
+    }
+    .id-card-back::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -72px;
+      top: -55px;
+      border: 1px solid rgba(162,31,96,.2);
+      border-radius: 50%;
+      box-shadow: 0 0 0 28px rgba(255,90,157,.07), 0 0 0 55px rgba(46,27,94,.045);
+    }
+    .back-mark {
+      align-self: center;
+      font-size: 4.8rem;
+      font-weight: 700;
+      line-height: .8;
+      letter-spacing: -.09em;
+      color: var(--purple-night);
+    }
+    .back-label { font: 700 .63rem/1 var(--mono); letter-spacing: .12em; }
+    .id-card-back > i {
+      display: block;
+      height: 28px;
+      background: repeating-linear-gradient(90deg, #32103f 0 2px, transparent 2px 5px);
+    }
+    @media (max-width: 640px) {
+      .id-card {
+        position: relative;
+        left: auto;
+        top: auto;
+        animation-name: badgeSwing;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .badge-rig { animation: none !important; opacity: 1; transform: none; }
+      .id-card { animation: none !important; transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -1226,19 +1324,28 @@
         <span class="orbit-word orbit-right">DATA VIZ</span>
         <span class="orbit-word orbit-bottom">D3.JS</span>
         <span class="orbit-word orbit-left">REACT</span>
-        <div class="lanyard" aria-hidden="true"><span></span></div>
-        <article class="id-card">
-          <div class="id-card-top"><span>SUDORS</span><span>PUBLIC HEALTH SYSTEMS</span></div>
-          <div class="id-card-body">
-            <div class="id-monogram" aria-hidden="true"><span>TA</span><i></i></div>
-            <div class="id-details">
-              <small>IDENTITY / ROLE</small>
-              <strong>Tirumalesh<br />Areti</strong>
-              <p>Lead Developer<br />SUDORS @ CDC</p>
+        <div class="badge-rig">
+          <div class="lanyard" aria-hidden="true"><span></span></div>
+          <article class="id-card">
+            <div class="id-card-front">
+              <div class="id-card-top"><span>SUDORS</span><span>PUBLIC HEALTH SYSTEMS</span></div>
+              <div class="id-card-body">
+                <div class="id-monogram" aria-hidden="true"><span>TA</span><i></i></div>
+                <div class="id-details">
+                  <small>IDENTITY / ROLE</small>
+                  <strong>Tirumalesh<br />Areti</strong>
+                  <p>Lead Developer<br />SUDORS @ CDC</p>
+                </div>
+              </div>
+              <div class="id-card-foot"><span>REACT · D3.JS · TYPESCRIPT</span><i aria-hidden="true"></i></div>
             </div>
-          </div>
-          <div class="id-card-foot"><span>REACT · D3.JS · TYPESCRIPT</span><i aria-hidden="true"></i></div>
-        </article>
+            <div class="id-card-back" aria-hidden="true">
+              <span class="back-mark">TA</span>
+              <span class="back-label">SUDORS · CDC</span>
+              <i></i>
+            </div>
+          </article>
+        </div>
       </div>
       <div class="hero-viz" aria-hidden="true"><canvas id="field"></canvas></div>
       <a class="scroll-cue" href="#work">Scroll to work <span aria-hidden="true">↓</span></a>
